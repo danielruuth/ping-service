@@ -10,6 +10,10 @@ var smtp = {
 	"password": ""
 }
 
+var hosts = [
+	{"host":'domain.com', "status":true, "contact":"email@domain.com"}
+];
+
 
 //Packages
 var ping = require('ping');
@@ -35,9 +39,7 @@ db.open(function(err, db) {
 var app = express();
 
 
-var hosts = [
-	{"host":'domain.com', "status":true, "contact":"email@domain.com"}
-];
+
 
 //Setup mail
 if( smtp.host !== "" ){
