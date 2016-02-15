@@ -28,7 +28,7 @@ db = new Db('pingback_service', dBserver);
 
 db.open(function(err, db) {
     if(!err) {
-        console.log("Connected to 'hoyservice_collections' database");
+        console.log("Connected to 'pingback_service' database");
     }
 });
 
