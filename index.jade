@@ -1,0 +1,10 @@
+html
+	head
+		link(rel='stylesheet', href='style.css', type='text/css' )
+	body
+		h1=title
+		table
+			each host in hosts
+				tr
+					td=host.host
+					td=host.status
