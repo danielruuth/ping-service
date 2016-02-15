@@ -23,6 +23,15 @@ var nodemailer = require('nodemailer');
 
 
 
+
+
+//Packages
+var ping = require('ping');
+var express = require('express');
+var mongo = require('mongodb');
+
+
+
 var Server = mongo.Server,
     Db = mongo.Db,
     BSON = mongo.BSONPure;
@@ -32,12 +41,15 @@ db = new Db('pingback_service', dBserver);
 
 db.open(function(err, db) {
     if(!err) {
-        console.log("Connected to 'pingback_service' database");
+        console.log("Connected to 'hoyservice_collections' database");
+    }else{
+    	console.log('Mongo error');
     }
 });
 
 var app = express();
 
+var nodemailer = require('nodemailer');
 
 
 
@@ -47,7 +59,7 @@ if( smtp.host !== "" ){
 }
 
 var mailOptions = {
-    from: 'Ping Service <user@domain.com>',
+    from: 'Ping Service <daniel.ruuth@gmail.com>',
     to: 'unset', // list of receivers
     subject: 'Pingservice', // Subject line
     text: '' // plaintext body
@@ -55,11 +67,22 @@ var mailOptions = {
 
 var saveStatusToDB = function( where, data ){
 	db.collection( 'pingback_status' , function(err, collection) {
-        collection.update(where, { $set: data} , {upsert:true, multi:false, safe:true}, function(err, result) {
-            if (err) {
-                console.log({'error':'An error has occurred'});
-            }
-        });
+        collection.updateOne(where, 
+        	{
+        		$set: data,
+        		$currentDate: { "lastModified": true }
+      		}, 
+        	{
+        		upsert:true, 
+        		safe:true
+        	}, 
+        	function(err, result) {
+            	if (err) {
+                	console.log({'error':'An error has occurred'});
+                	console.log(err);
+            	}
+        	}
+        );
     });
 }
 
@@ -96,7 +119,7 @@ var checkStatus = function(){
 	        host.status = isAlive;
 
 	        if(statusChanged){
-	        	saveStatusToDB( {"host": host.host}, {"status": host.status, "incident_start": new Date().getTime()  } )
+	        	saveStatusToDB( {"host": host.host}, {"status": host.status, "incident_start": new Date().getTime() } )
 	        	
 	        	if(transporter){
 		        	transporter.sendMail(mailOptions, function(error, info){
@@ -114,19 +137,18 @@ var checkStatus = function(){
 
 }
 
-var listCurrentStatus = function(){
-	var router = express.Router();
-
-	res.render('index', { title: 'Express' });
-
-}
-
-setInterval( checkStatus, 60000 );
+//setInterval( checkStatus, 5000 );
 console.log( 'Pingservice is running on ' + hosts.length + ' hosts' )
 
 
 //General collections
-app.get('/status/', listCurrentStatus);
+app.set('view engine', 'jade');
+app.use(express.static('static'));
+app.get('/', function (req, res) {
+  res.render('index', { title: 'Are we live?', hosts: hosts});
+});
+
+
 
 
 
