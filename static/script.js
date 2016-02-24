@@ -49,7 +49,6 @@ socket.on('data', function (data) {
 
     var $row, $hostcell, $statuscell, $timecell;
     $.each(data.hosts, function(index,item){
-    	console.log(item);
     	$row = $('<tr />');
     	$row.attr('id', 'row' + item.id);
 

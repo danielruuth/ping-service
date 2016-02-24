@@ -87,7 +87,7 @@ var checkStatus = function(){
 
 	        if(statusChanged){
 	        	incident_time = new Date().getTime();
-	        	io.emit('statusChanged', { host: host.host, status: host.status, incident_start: incident_time });
+	        	io.emit('statusChanged', { id: host.id, host: host.host, status: host.status, incident_start: incident_time });
 	        	host.incident_start = incident_time;
 	        	
 	        	if(transporter){
