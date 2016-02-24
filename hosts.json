@@ -1,0 +1,8 @@
+[
+	{
+		"id":0,
+		"host": "domain.com",
+		"status": true,
+		"contact": "user@domain.com"
+	}
+]

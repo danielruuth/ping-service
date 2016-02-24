@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Site Status</title>
+  <meta name="description" content="Site Status">
+  <meta name="author" content="@danielruuth //mondayhero.com">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="style.css">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+<body>
+ 	<div class="container-fluid">
+ 		<div class="row">
+ 			<div class="col-xs-12 col-md-3 col-md-offset-1">
+ 				<h2>Status</h2>
+ 				<p id="status-msg">Here you can see current status of all sites marked for survayance.</p>
+ 			</div>
+ 			<div class="col-xs-12 col-md-8">
+			 	<table id="host-table" class="table table-striped table-hover">
+			 		<tr>
+			 			<th>Host</th><th>Status</th><th>Incident start</th>
+			 		</tr>
+
+			 	</table>
+		 	</div>
+	 	</div>
+ 	</div>
+
+ 	
+ 	
+
+
+ 
+	<!-- run javascript at the end -->
+	<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+	<script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+	<!-- Latest compiled and minified CSS -->
+	
+
+  <script src="script.js"></script>
+</body>
+</html>
