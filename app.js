@@ -26,7 +26,7 @@ var io = require('socket.io')(server);
 
 
 //Setup express
-app.use(express.static('static'));
+app.use(express.static('views/static'));
 app.get('/', function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
