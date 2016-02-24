@@ -4,27 +4,27 @@
 var socket = io.connect('http://localhost:3000');
 var $host_table = $('#host-table');
 
-function timeSince(timeStamp) {
-	
-    var now = new Date(),
-      secondsPast = (now.getTime() - timeStamp) / 1000;
-    if(secondsPast < 60){
-      return parseInt(secondsPast) + 's';
+
+var pad = function(int){
+    if(int < 9){
+        int = "0"+int;
     }
-    if(secondsPast < 3600){
-      return parseInt(secondsPast/60) + 'm';
-    }
-    if(secondsPast <= 86400){
-      return parseInt(secondsPast/3600) + 'h';
-    }
-    if(secondsPast > 86400){
-    	timestamp = new Date().setTime(timestamp);
-        day = timeStamp.getDate();
-        month = timeStamp.toDateString().match(/ [a-zA-Z]*/)[0].replace(" ","");
-        year = timeStamp.getFullYear() == now.getFullYear() ? "" :  " "+timeStamp.getFullYear();
-        return day + " " + month + year;
-    }
-  }
+    return int;
+}
+
+var nicetime = function( timestamp ){
+    var date = new Date(timestamp);
+    var now = new Date();
+
+    var year = date.getFullYear();
+    var month = pad( date.getMonth()+1 );
+    var day = pad( date.getDate() );
+    var hours = pad( date.getHours() );
+    var minutes = pad( date.getMinutes() );
+    var seconds = pad( date.getSeconds() );
+
+    return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+}
 
 socket.on('statusChanged', function (data) {
     console.log(data);
@@ -41,8 +41,12 @@ socket.on('statusChanged', function (data) {
 
     $('td:eq(1)', $row).empty();
     $('td:eq(1)', $row).append( $status );
-    $('td:eq(2)', $row).text( timeSince(data.incident_start) );
+    $('td:eq(2)', $row).text( nicetime(data.incident_start) );
 
+});
+
+socket.on('statusChecked', function(data){
+	$('#last_checked').text( nicetime(data.lastupdated) );
 });
 
 socket.on('data', function (data) {
@@ -63,7 +67,7 @@ socket.on('data', function (data) {
 
  		$status.appendTo($statuscell);
 
-    	$timecell.text( (item.incident_start) ? timeSince(item.incident_start) : '---');
+    	$timecell.text( (item.incident_start) ? nicetime(item.incident_start) : '---');
 
     	$hostcell.appendTo($row);
     	$statuscell.appendTo($row);
@@ -75,5 +79,8 @@ socket.on('data', function (data) {
 	    }else{
 	    	$row.addClass('error');
 	    }
-    })
+
+
+    });
+    $('#last_checked').text( nicetime(data.lastupdated) );
 });

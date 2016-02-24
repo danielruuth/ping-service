@@ -31,21 +31,20 @@ app.get('/', function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
-server.listen(3000, function(){
-  console.log('listening on *:3000');
-});
+server.listen(3000);
 
 
 
-
+var checkInterval = 60000;
 var lastupdated = new Date();
 var incident_time;
+var intervalInt;
 
 
 
 //Setup socket
 io.on('connection', function(socket){
-	socket.emit('data', {hosts:hosts});
+	socket.emit('data', {hosts:hosts, lastupdated: lastupdated});
 });
 
 
@@ -66,21 +65,17 @@ if( smtp.host !== "" ){
 
 var checkStatus = function(){
 	var currentStatus, sendMail, message;
-
+	lastupdated = new Date();
 	hosts.forEach(function(host){
 	    ping.sys.probe(host.host, function(isAlive){
-	        //var msg = isAlive ? 'host ' + host.host + ' is alive' : 'host ' + host.host + ' is dead';
-	        //console.log(msg);
-
 	        currentStatus = isAlive;
-	        
 	        statusChanged = false;
 
 	        if( currentStatus != host.status && isAlive === false ){
 	        	message = 'Host ' + host.host + ' is down.';
 	        	statusChanged = true;
 	        }else if( currentStatus != host.status && isAlive === true ){
-	        	message = 'Host ' + host.host + ' is back up.';
+	        	message = 'Host ' + host.host + ' is back up. Downtime was ' + (lastupdates.getTime()-host.incident_start) + ' ms';
 	        }
 
 	        host.status = isAlive;
@@ -105,10 +100,15 @@ var checkStatus = function(){
 
 	    });
 	});
-	lastupdated = new Date();
+	
+	if(intervalInt){
+		clearTimeout( intervalInt );
+	}
+	intervalInt = setTimeout( checkStatus, checkInterval );
+	io.emit('statusChecked', { lastupdated: lastupdated });
 
 }
+checkStatus();
 
-setInterval( checkStatus, 60000 );
 console.log( 'Pingservice is running on ' + hosts.length + ' hosts' );
 
